@@ -1,16 +1,49 @@
 var express = require("express");
+var bodyParser = require("body-parser");
+
+
+const MongoClient = require("mongodb").MongoClient;
+const uri = "mongodb+srv://test:test@sos-nwznc.mongodb.net/sos?retryWrites=true";
+const client = new MongoClient(uri, { useNewUrlParser: true });
+
+var contacts;
+
+client.connect(err => {
+  contacts = client.db("sos1819").collection("contacts");
+  console.log("Connected!");
+});
 
 var app = express();
-const port = process.env.PORT || 8080;
 
+app.use(bodyParser.json());
 
-app.get("/", (req,res) =>{
-    console.log("New request!");
-    res.send("<html><body>Hi there!</body></html>");
+var port = process.env.PORT || 8080;
+
+app.get("/contacts", (req,res)=>{
+    
+    contacts.find({}).toArray((err,contactsArray)=>{
+        
+        if(err)
+            console.log("Error: "+err);
+        
+        res.send(contactsArray);        
+    });
+
 });
+
+
+// POST /contacts/
+
+app.post("/contacts", (req,res)=>{
+    
+    var newContact = req.body;
+    
+    contacts.insert(newContact);
+    
+    res.sendStatus(201);
+});
+
 
 app.listen(port, () => {
-    console.log("Ready in port "+port);
+    console.log("Super server ready on port " + port);
 });
-
-//fine
