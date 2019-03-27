@@ -9,7 +9,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true });
 var contacts;
 
 client.connect(err => {
-  contacts = client.db("sos1819").collection("contacts");
+  contacts = client.db("sos1819").collection("contacts"); //sos1819 nome della base di dati e sos nome cluster
   console.log("Connected!");
 });
 
@@ -21,7 +21,7 @@ var port = process.env.PORT || 8080;
 
 app.get("/contacts", (req,res)=>{
     
-    contacts.find({}).toArray((err,contactsArray)=>{
+    contacts.find({}).toArray((err,contactsArray)=>{ //per prendere tutti gli elementi della base di dati e metterli in un array
         
         if(err)
             console.log("Error: "+err);
